@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="device-width, inititial-scale=1.0" />
+    <meta
+      name="description"
+      content="A simple note-taking app to help you stay motivated and organized."
+    />
+    <meta
+      name="keywords"
+      content="Notes, motivation, note-taking, productivity"
+    />
+    <meta name="author" content="Charles Brent G Bantong" />
+    <title>Clarity</title>
+    <link rel="icon" type="image/png" href="./images/Clarity.png" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <section class="sidebar-heading" id="sidebarHeading">
+        <img
+          src="Images/Clarity.png"
+          alt="logo"
+          class="sidebar-logo"
+          id="sidebarLogo"
+        />
+        <h1 class="sidebar-title" id="sidebarTitle">Clarity</h1>
+      </section>
+      <nav class="nav">
+        <ul class="nav-list" id="navList">
+          <li class="nav-list-item">
+            <h2 class="nav-list-title">Your Space</h2>
+            <ul class="nav-list" id="navListYourSpace">
+              <li class="nav-list-anchor" id="homeNav"><span># </span>Home</li>
+              <li class="nav-list-anchor" id="calendarNav">
+                <span># </span>Calendar
+              </li>
+              <li class="nav-list-anchor active-nav">
+                <span class="active-nav active-blue"># </span>Notes
+              </li>
+              <li class="nav-list-anchor"><span># </span>To-Do List</li>
+              <li class="nav-list-anchor"><span># </span>Events</li>
+              <li class="nav-list-anchor"><span># </span>Reminders</li>
+            </ul>
+          </li>
+          <li class="nav-list-item">
+            <h2 class="nav-list-title">Community</h2>
+            <ul class="nav-list" id="navListCommunity">
+              <li class="nav-list-anchor"><span># </span>Leaderboard</li>
+              <li class="nav-list-anchor"><span># </span>Pets</li>
+              <li class="nav-list-anchor"><span># </span>Character</li>
+              <li class="nav-list-anchor"><span># </span>Profile</li>
+              <li class="nav-list-anchor"><span># </span>Feed</li>
+              <li class="nav-list-anchor"><span># </span>Inbox</li>
+            </ul>
+          </li>
+          <li class="nav-list-item">
+            <h2 class="nav-list-title">Experiences</h2>
+            <ul class="nav-list" id="navListCommunity">
+              <li class="nav-list-anchor"><span># </span>Streak</li>
+              <li class="nav-list-anchor"><span># </span>Rewards</li>
+              <li class="nav-list-anchor"><span># </span>Missions</li>
+              <li class="nav-list-anchor"><span># </span>Progress</li>
+              <li class="nav-list-anchor"><span># </span>Shop</li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <section class="sidebar-footer" id="sidebarFooter">
+        <div class="footer-div">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Cog_wheel_icon.svg"
+            title="Settings Icon"
+            class="footer-icon-svg"
+          />
+          <p class="footer-text">Settings</p>
+        </div>
+        <div class="footer-div">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/7/74/Codex_icon_help_notice.svg"
+            alt="help Icon"
+            class="footer-icon-svg"
+          />
+          <p class="footer-text">Help</p>
+        </div>
+      </section>
+    </aside>
+    <main class="main">
+      <aside class="sidebars">
+        <div class="notes-sidebar">
+          <div class="notes-sidebar-head">
+            <h3 class="notes-sidebar-title">Notes</h3>
+            <div class="notes-sidebar-head-icons">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/f/f3/Breathe-system-search.svg"
+                alt="search icon"
+                class="notes-sidebar-icon"
+              />
+              <img
+                src="Images/button-add.svg"
+                alt="Add icon"
+                class="notes-sidebar-icon add-icon"
+              />
+            </div>
+          </div>
+          <div class="notes-sidebar-content">
+            <ul class="notes-folder-list">
+              <li class="notes-folder active-folder">
+                <div class="folder-wrapper">
+                  <figure>
+                    <img
+                      src="Images/Folder 3 enhance.svg"
+                      alt="folder icon"
+                      class="notes-folder-icon"
+                    />
+                  </figure>
+                  <h4 class="active-blue">Sample 1</h4>
+                </div>
+                <ul class="notes-item-list">
+                  <li class="notes-item">
+                    <div class="circle active-circle"></div>
+                    <p class="active-blue">Lesson 1</p>
+                  </li>
+                  <li class="notes-item">
+                    <div class="circle"></div>
+                    <p>Lesson 2</p>
+                  </li>
+                </ul>
+              </li>
+              <li class="notes-folder">
+                <div class="folder-wrapper">
+                  <figure>
+                    <img
+                      src="Images/Folder 3 enhance.svg"
+                      alt="folder icon"
+                      class="notes-folder-icon"
+                    />
+                  </figure>
+                  <h4>Sample 2</h4>
+                </div>
+                <ul class="notes-item-list hidden-item">
+                  <li class="notes-item">
+                    <div class="circle"></div>
+                    <p>Lesson 1</p>
+                  </li>
+                  <li class="notes-item">
+                    <div class="circle"></div>
+                    <p>Lesson 2</p>
+                  </li>
+                </ul>
+              </li>
+              <li class="notes-folder">
+                <div class="folder-wrapper">
+                  <figure>
+                    <img
+                      src="Images/Folder 3 enhance.svg"
+                      alt="folder icon"
+                      class="notes-folder-icon"
+                    />
+                  </figure>
+                  <h4>Sample 3</h4>
+                </div>
+                <ul class="notes-item-list hidden-item">
+                  <li class="notes-item">
+                    <div class="circle"></div>
+                    <p>Lesson 1</p>
+                  </li>
+                  <li class="notes-item">
+                    <div class="circle"></div>
+                    <p>Lesson 2</p>
+                  </li>
+                </ul>
+              </li>
+              <li class="notes-folder">
+                <div class="folder-wrapper">
+                  <figure>
+                    <img
+                      src="Images/Folder 3 enhance.svg"
+                      alt="folder icon"
+                      class="notes-folder-icon"
+                    />
+                  </figure>
+                  <h4>Sample 4</h4>
+                </div>
+                <ul class="notes-item-list hidden-item">
+                  <li class="notes-item">
+                    <div class="circle"></div>
+                    <p>Lesson 1</p>
+                  </li>
+                  <li class="notes-item">
+                    <div class="circle"></div>
+                    <p>Lesson 2</p>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </aside>
+      <div class="content-block">
+        <header class="header">
+          <h1 class="header-title">Home</h1>
+          <ul class="options" id="options">
+            <li class="options-item">
+              <img
+                src="Images/three-dots.png"
+                alt="options"
+                class="options-icon"
+              />
+            </li>
+          </ul>
+        </header>
+
+        <section class="content" id="content">
+          <section class="contentSize home hidden" id="home"></section>
+          <section class="contentSize notes" id="notes"></section>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>
