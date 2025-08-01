@@ -59,9 +59,9 @@ body{
 }
 
 .sidebar-heading:hover{
-    background-color: #444;
     cursor: pointer;
-    border: 1px solid var(--blue);
+    scale: 1.05;
+    transition: all 0.2s ease-in-out;
 }
 
 .sidebar-logo{
@@ -124,7 +124,7 @@ body{
 }
 
 .nav-list-anchor:hover{
-    color: var(--blue);
+    color: #999999;
     cursor: pointer;
 }
 
@@ -249,8 +249,7 @@ body{
     height: 100%;
 }
 
-/* notes */
-.notes-sidebar{
+.content-sidebar{
     width: 20vw;
     height: 100vh;
     background-color: #666666;
@@ -259,6 +258,9 @@ body{
     align-items: center;
     justify-content: flex-start;
 }
+
+/* notes */
+
 
 .notes-sidebar-head{
     height: auto;
