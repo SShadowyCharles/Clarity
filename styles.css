@@ -31,7 +31,7 @@ body{
 
 .sidebar{
     background-color: #444444;
-    width: 10vw;
+    width: 15vw;
     height: 100vh;
     min-width: 200px;
     border-right: 1px solid #444;
@@ -249,6 +249,10 @@ body{
     height: 100%;
 }
 
+.contentSize .hidden{
+    display: none !important;
+}
+
 .content-sidebar{
     width: 20vw;
     height: 100vh;
@@ -358,6 +362,10 @@ body{
     margin-bottom: 0 !important;
 }
 
+.active-folder h4{
+    color: var(--blue) !important;
+}
+
 .notes-folder-icon{
     width: 40px;
     height: 40px;
@@ -417,15 +425,43 @@ body{
     left: 5px;
 }
 
-.active-circle{
+.circle.active{
     background-color: var(--blue);
 }
 
-.notes-item p{
+.lesson.active{
+    color: var(--blue) !important;
+}
+
+.lesson{
     width: 100%;
     height: auto;
     font-size: 1rem;
     color: #fefefe;
     margin: 0;
     font-weight: bold;
+}
+
+
+
+/* Notes body */
+.lessons-container{
+    width: 100%;
+    height: calc(100vh - 60px);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.lesson-box{
+    width: 90%;
+    height: 70%;
+    border: 3px solid #fefefe;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fc7d7d;
 }
