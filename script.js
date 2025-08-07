@@ -103,7 +103,7 @@ function updateNotesSidebar() {
       const li = document.createElement("li");
       li.classList.add("notes-folder");
       li.innerHTML = `
-        <div class="folder-wrapper">
+        <section class="folder-wrapper">
           <figure>
             <img 
               src="Images/Folder 3 enhance.svg"
@@ -112,7 +112,7 @@ function updateNotesSidebar() {
             />
           </figure>
           <h4>${item}</h4>
-        </div>
+        </section>
         <ul class="notes-item-list hidden">
           ${data.filter((note) => note.folder === item).map((note) => {
             if (note.folder === item) {
