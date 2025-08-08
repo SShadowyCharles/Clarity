@@ -98,6 +98,7 @@
                 src="Images/button-add.svg"
                 alt="Add icon"
                 class="notes-sidebar-icon add-icon"
+                id="addNoteIcon"
               />
             </div>
           </div>
@@ -109,7 +110,10 @@
       </aside>
       <article class="content-block">
         <header class="header">
+          <div class="wrapper">
+          <img src="Images/return.svg" alt="Back Button" class="back-button hidden" id="backButton" />
           <h1 class="header-title">Home</h1>
+        </div>
           <ul class="options" id="options">
             <li class="options-item">
               <img
@@ -122,7 +126,8 @@
         </header>
         <section class="content" id="content">
           <section class="contentSize home hidden" id="home"></section>
-          <section class="contentSize notes" id="notesBody"></section>
+          <section class="contentSize notes" id="notesBody">
+          </section>
         </section>
       </article>
     </main>
