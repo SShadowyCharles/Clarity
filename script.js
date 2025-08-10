@@ -251,7 +251,7 @@ function updateNotesSidebar() {
                 <section class="open-note-header">
                   <h3>${noteObj.title}</h3>
                   <article class="misc">
-                    <section class="note-tag">${noteObj.tag}</section>
+                    <section class="lesson-tag">${noteObj.tag}</section>
                     <section class="edit-note-button">
                       <img src="Images/edit.svg" alt="Edit Note" class="misc-icons edit-button" />
                     </section>
@@ -570,7 +570,7 @@ notesBody.addEventListener("click", (e) => {
     e.stopPropagation();
     const noteElement = e.target.closest(".open-note");
     const title = noteElement.querySelector("h3").textContent;
-    const tag = noteElement.querySelector(".note-tag").textContent;
+    const tag = noteElement.querySelector(".lesson-tag").textContent;
     const content = noteElement.querySelector(".open-note-body p").textContent;
     const breadcrumb = noteElement.querySelector(".breadcrumb").textContent;
     const folder = breadcrumb.split("/")[0];
