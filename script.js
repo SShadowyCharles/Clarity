@@ -15,7 +15,7 @@ function getPastelColor() {
   return pastel;
 }
 
-function getTagColor(){
+function getTagColor() {
   const contrastingColors = [
     "#2D3747", // Dark slate blue
     "#1A1A2E", // Deep navy
@@ -36,9 +36,11 @@ function getTagColor(){
     "#3E6680", // Steel blue
     "#2E5266", // Slate blue
     "#1C3738", // Dark pine
-    "#0B3C49"  // Deep ocean
+    "#0B3C49", // Deep ocean
   ];
-  return contrastingColors[Math.floor(Math.random() * contrastingColors.length)];
+  return contrastingColors[
+    Math.floor(Math.random() * contrastingColors.length)
+  ];
 }
 
 const navIds = [
@@ -62,8 +64,6 @@ const navIds = [
   },
 ];
 
-
-
 function changeActiveNav() {
   notesSidebarReset();
   allNavs.forEach((nav) => {
@@ -73,15 +73,15 @@ function changeActiveNav() {
     contentSidebar.classList.add("hidden");
   });
   allContentSize.forEach((contentSize) => {
-    contentSize.innerHTML = ""; 
-  })
+    contentSize.innerHTML = "";
+  });
   this.classList.add("active-nav");
   const currentNavId = this.id;
   const currentSidebar = navIds.find((nav) => nav.id === currentNavId).sidebar;
   contentHeader.textContent = navIds.find(
     (nav) => nav.id === currentNavId
   ).title;
-  
+
   if (currentSidebar === "default") {
     return;
   }
@@ -101,20 +101,20 @@ allNavs.forEach((nav) => {
 
 /* Data Getting and Submission */
 
-function getData () {
+function getData() {
   const getData = localStorage.getItem("data");
   if (getData) {
     return JSON.parse(getData);
   } else {
     return [];
   }
-};
+}
 
 let data = getData();
 
-function updateFoldersAndTags(){
-  uniqueFolders = [...new Set(data.map(item => item.folder))];
-  uniqueTags = [...new Set(data.map(item => item.tag))];
+function updateFoldersAndTags() {
+  uniqueFolders = [...new Set(data.map((item) => item.folder))];
+  uniqueTags = [...new Set(data.map((item) => item.tag))];
 }
 
 let currentNote = {
@@ -139,7 +139,7 @@ function submitData() {
 
 /* Notes Sidebar Functionality */
 function updateNotesSidebar() {
-  notesFolderList.innerHTML= "";
+  notesFolderList.innerHTML = "";
   contentHeader.textContent = "My Notes";
   updateFoldersAndTags();
   if (Array.isArray(data) && data.length > 0) {
@@ -158,16 +158,19 @@ function updateNotesSidebar() {
           <h4>${item}</h4>
         </section>
         <ul class="notes-item-list hidden" id="${item}Lessons">
-          ${data.filter((note) => note.folder === item).map((note) => {
-            if (note.folder === item) {
-              return `
+          ${data
+            .filter((note) => note.folder === item)
+            .map((note) => {
+              if (note.folder === item) {
+                return `
                 <li class="notes-item">
                   <div class="circle"></div>
                   <p class="lesson">${note.title}</p>
                 </li>
-              `
-            }
-          }).join("")}
+              `;
+              }
+            })
+            .join("")}
         </ul>
       `;
 
@@ -184,7 +187,7 @@ function updateNotesSidebar() {
       item.addEventListener("click", () => {
         backButton.classList.add("hidden");
         contentHeader.textContent = item.querySelector("h4").textContent;
-        allFolders.forEach((folder) =>  {
+        allFolders.forEach((folder) => {
           folder.classList.remove("active-folder");
         });
         allNotesItemLists.forEach((list) => {
@@ -208,11 +211,14 @@ function updateNotesSidebar() {
           const lessonBox = document.createElement("div");
           lessonBox.classList.add("lesson-box");
           const folderName = item.querySelector("h4").textContent;
-          const noteObj = data.find((note) => note.title === lesson.textContent && note.folder === folderName);
+          const noteObj = data.find(
+            (note) =>
+              note.title === lesson.textContent && note.folder === folderName
+          );
           lessonBox.innerHTML = `
             <h3>${lesson.textContent}</h3>
             <div class="lesson-box-tag">${noteObj.tag}</div>
-          ` 
+          `;
           const lessonBoxTag = lessonBox.querySelector(".lesson-box-tag");
           lessonBoxTag.style.backgroundColor = getTagColor();
           lessonBox.style.backgroundColor = getPastelColor();
@@ -263,17 +269,16 @@ function updateNotesSidebar() {
                 </section>
               </article>
             `;
-            
-          })
+          });
           lessonBody.appendChild(lessonBox);
-        })
+        });
         item.classList.add("active-folder");
-      })
+      });
     });
   }
 }
 
-function notesSidebarReset(){
+function notesSidebarReset() {
   notesFolderList.innerHTML = "";
   notesBody.innerHTML = "";
   currentNote = {
@@ -293,7 +298,7 @@ function notesSidebarReset(){
 function showDialog(title, message) {
   const dialogbox = document.createElement("dialog");
   dialogbox.classList.add("dialog");
-  dialogbox.innerHTML= `
+  dialogbox.innerHTML = `
     <form method="dialogbox" class="note-form">
       <h3>${title}</h3>
       <p>${message}</p>
@@ -310,10 +315,10 @@ function showDialog(title, message) {
   });
 }
 
-function showConfirmDialog(title, message, onsub){
+function showConfirmDialog(title, message, onsub) {
   const dialogbox = document.createElement("dialog");
   dialogbox.classList.add("dialog");
-  dialogbox.innerHTML= `
+  dialogbox.innerHTML = `
     <form class="note-form">
       <h3>${title}</h3>
       <p>${message}</p>
@@ -341,10 +346,10 @@ function showConfirmDialog(title, message, onsub){
   });
 }
 
-function createAddDialog(title, inputPlaceholder, onsub){
+function createAddDialog(title, inputPlaceholder, onsub) {
   const dialogbox = document.createElement("dialog");
   dialogbox.classList.add("dialog");
-  dialogbox.innerHTML= `
+  dialogbox.innerHTML = `
     <form class="note-form">
       <h3>${title}</h3>
       <input type="text" id="dialogInput" placeholder="${inputPlaceholder}" required />
@@ -369,7 +374,7 @@ function createAddDialog(title, inputPlaceholder, onsub){
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const value = input.value.trim();
-    if (value){
+    if (value) {
       onsub(value);
     }
     dialogbox.close();
@@ -377,14 +382,13 @@ function createAddDialog(title, inputPlaceholder, onsub){
   });
 }
 
-addNoteIcon.addEventListener("click", () =>{
+addNoteIcon.addEventListener("click", () => {
   notesBody.innerHTML = "";
   contentHeader.textContent = "New Note";
   const addNote = document.createElement("article");
   updateFoldersAndTags();
   addNote.classList.add("add-note");
-  addNote.innerHTML = 
-  `
+  addNote.innerHTML = `
     <form action="" method="post" class="note-form" id="addNoteForm">
       <p class="breadcrumb">Notes/myNotes</p>
       <div class="note-header">
@@ -400,11 +404,13 @@ addNoteIcon.addEventListener("click", () =>{
         <section>
           <select name="Folder" id="folderSelect" class="note-folder">
             <option value="" disabled selected>Select Folder</option>
-            ${uniqueFolders.map((item) => {
-               return `
+            ${uniqueFolders
+              .map((item) => {
+                return `
                 <option value="${item}">${item}</option>
-              `
-            }).join("")}
+              `;
+              })
+              .join("")}
             <option value="add">Add new Folder</option>
           </select>
           <button class="form-button" id="saveNote">Save</button>
@@ -413,11 +419,13 @@ addNoteIcon.addEventListener("click", () =>{
         <section>
           <select name="tag" id="tagSelect" class="note-tag">
             <option value="" disabled selected>Select Tag</option>
-            ${uniqueTags.map((item) => {
+            ${uniqueTags
+              .map((item) => {
                 return `
                   <option value="${item}">${item}</option>
-                `
-              }).join("")}
+                `;
+              })
+              .join("")}
             <option value="add" id="addTag">Add new Tag</option>
           </select>
         </section>
@@ -429,43 +437,47 @@ addNoteIcon.addEventListener("click", () =>{
         <p>${new Date().toDateString()}</p>
       </div>
     </form>
-  `
+  `;
   const folderSelect = addNote.querySelector("#folderSelect");
 
   folderSelect.addEventListener("change", (e) => {
-      e.preventDefault();
-      createAddDialog("Add new Folder", "Input new folder name here", (value) => {
-        uniqueFolders.push(value);
-          folderSelect.innerHTML =`
+    e.preventDefault();
+    createAddDialog("Add new Folder", "Input new folder name here", (value) => {
+      uniqueFolders.push(value);
+      folderSelect.innerHTML = `
           <option value="" disabled selected>Select Folder</option>
-          ${uniqueFolders.map((item) => {
-            return `
+          ${uniqueFolders
+            .map((item) => {
+              return `
               <option value="${item}">${item}</option>
-            `
-          }).join("")}
+            `;
+            })
+            .join("")}
           <option value="add">Add new Folder</option>
-          `
-          folderSelect.value = value;
-      });
+          `;
+      folderSelect.value = value;
+    });
   });
 
   const tagSelect = addNote.querySelector("#tagSelect");
 
   tagSelect.addEventListener("change", (e) => {
-    createAddDialog("Add new Tag", "Enter tag name", (value)=>{
+    createAddDialog("Add new Tag", "Enter tag name", (value) => {
       e.preventDefault();
-      
-        uniqueTags.push(value);
-        tagSelect.innerHTML =`
+
+      uniqueTags.push(value);
+      tagSelect.innerHTML = `
         <option value="" disabled selected>Select Tag</option>
-        ${uniqueTags.map((item) => {
-          return `
+        ${uniqueTags
+          .map((item) => {
+            return `
             <option value="${item}">${item}</option>
-          `
-        }).join("")}
+          `;
+          })
+          .join("")}
         <option value="add">Add new Tag</option>
-        `
-        tagSelect.value = value;
+        `;
+      tagSelect.value = value;
     });
   });
 
@@ -477,23 +489,43 @@ addNoteIcon.addEventListener("click", () =>{
     const titleInput = addNote.querySelector("#noteTitle").value.trim();
     const folderSelect = addNote.querySelector("#folderSelect").value.trim();
     const tagSelect = addNote.querySelector("#tagSelect").value.trim();
-    const contentTextarea = addNote.querySelector("#addNoteContent").value.trim();
+    const contentTextarea = addNote
+      .querySelector("#addNoteContent")
+      .value.trim();
     const date = new Date();
-    const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    if(data.some((item) => item.title === titleInput && item.folder === folderSelect)) {
-      showDialog("Note Already Exists", `A note with the title "${titleInput}" already exists in the folder "${folderSelect}".`);
+    const time = date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    if (
+      data.some(
+        (item) => item.title === titleInput && item.folder === folderSelect
+      )
+    ) {
+      showDialog(
+        "Note Already Exists",
+        `A note with the title "${titleInput}" already exists in the folder "${folderSelect}".`
+      );
       return;
-    } else if(titleInput === "" || folderSelect === "" || tagSelect === "" || contentTextarea === "") {
-      showDialog("Empty Fields", "Please fill in all fields before saving the note.");
+    } else if (
+      titleInput === "" ||
+      folderSelect === "" ||
+      tagSelect === "" ||
+      contentTextarea === ""
+    ) {
+      showDialog(
+        "Empty Fields",
+        "Please fill in all fields before saving the note."
+      );
     } else {
-      currentNote ={
+      currentNote = {
         folder: folderSelect,
         title: titleInput,
         tag: tagSelect,
         content: contentTextarea,
         date: date.toDateString(),
         time: time,
-      }
+      };
       data.push(currentNote);
       localStorage.setItem("data", JSON.stringify(data));
       notesSidebarReset();
@@ -502,28 +534,37 @@ addNoteIcon.addEventListener("click", () =>{
 
   cancelNoteButton.addEventListener("click", (e) => {
     e.preventDefault();
-    showConfirmDialog("Cancel Note Creation", "Are you sure you want to cancel creating this note? All unsaved changes will be lost.", notesSidebarReset());
+    showConfirmDialog(
+      "Cancel Note Creation",
+      "Are you sure you want to cancel creating this note? All unsaved changes will be lost.",
+      notesSidebarReset
+    );
   });
   notesBody.appendChild(addNote);
 });
 
-
 notesBody.addEventListener("click", (e) => {
-  if(e.target.classList.contains("delete-button")) {
+  if (e.target.classList.contains("delete-button")) {
     e.stopPropagation();
     const noteElement = e.target.closest(".open-note");
     const title = noteElement.querySelector("h3").textContent;
     const breadcrumb = noteElement.querySelector(".breadcrumb").textContent;
     const folder = breadcrumb.split("/")[0];
-    showConfirmDialog("Delete Note?", "Are you sure you want to delete this note?", () => {
-      const note = data.find(item => item.title === title && item.folder === folder)
-      if (note){
-        const noteIndex = data.indexOf(note);
-        data.splice(noteIndex, 1);
-        localStorage.setItem("data", JSON.stringify(data));
-        notesSidebarReset();
+    showConfirmDialog(
+      "Delete Note?",
+      "Are you sure you want to delete this note?",
+      () => {
+        const note = data.find(
+          (item) => item.title === title && item.folder === folder
+        );
+        if (note) {
+          const noteIndex = data.indexOf(note);
+          data.splice(noteIndex, 1);
+          localStorage.setItem("data", JSON.stringify(data));
+          notesSidebarReset();
+        }
       }
-    });
+    );
   }
   if (e.target.classList.contains("edit-button")) {
     e.stopPropagation();
@@ -551,9 +592,15 @@ notesBody.addEventListener("click", (e) => {
             <section>
               <select name="Folder" id="editFolderSelect" class="note-folder">
                 <option value="" disabled>Select Folder</option>
-                ${[...new Set(data.map(item => item.folder))].map((item) => `
-                  <option value="${item}" ${item === folder ? "selected" : ""}>${item}</option>
-                `).join("")}
+                ${[...new Set(data.map((item) => item.folder))]
+                  .map(
+                    (item) => `
+                  <option value="${item}" ${
+                      item === folder ? "selected" : ""
+                    }>${item}</option>
+                `
+                  )
+                  .join("")}
                 <option value="add">Add new Folder</option>
               </select>
               <button class="form-button" id="saveEditedNote">Save</button>
@@ -562,9 +609,15 @@ notesBody.addEventListener("click", (e) => {
             <section>
               <select name="tag" id="editTagSelect" class="note-tag">
                 <option value="" disabled>Select Tag</option>
-                ${[...new Set(data.map(item => item.tag))].map((item) => `
-                  <option value="${item}" ${item === tag ? "selected" : ""}>${item}</option>
-                `).join("")}
+                ${[...new Set(data.map((item) => item.tag))]
+                  .map(
+                    (item) => `
+                  <option value="${item}" ${
+                      item === tag ? "selected" : ""
+                    }>${item}</option>
+                `
+                  )
+                  .join("")}
                 <option value="add">Add new Tag</option>
               </select>
             </section>
@@ -574,7 +627,10 @@ notesBody.addEventListener("click", (e) => {
           </div>
           <div class="note-footer">
             <p>${new Date().toDateString()}</p>
-            <p>${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p> 
+            <p>${new Date().toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}</p> 
           </div>
         </form>
       </article>
@@ -585,74 +641,102 @@ notesBody.addEventListener("click", (e) => {
       if (ev.target.value === "add") {
         folderSelect.addEventListener("change", (ev) => {
           ev.preventDefault();
-          createAddDialog("Add new Folder", "Input new folder name here", (value) => {
-            uniqueFolders.push(value);
-              folderSelect.innerHTML =`
+          createAddDialog(
+            "Add new Folder",
+            "Input new folder name here",
+            (value) => {
+              uniqueFolders.push(value);
+              folderSelect.innerHTML = `
               <option value="" disabled selected>Select Folder</option>
-              ${uniqueFolders.map((item) => {
-                return `
+              ${uniqueFolders
+                .map((item) => {
+                  return `
                   <option value="${item}">${item}</option>
-                `
-              }).join("")}
+                `;
+                })
+                .join("")}
               <option value="add">Add new Folder</option>
-              `
+              `;
               folderSelect.value = value;
-            });
+            }
+          );
         });
       }
     });
 
     const tagSelect = notesBody.querySelector("#editTagSelect");
     tagSelect.addEventListener("change", (ev) => {
-    createAddDialog("Add new Tag", "Enter tag name", (value)=>{
-      ev.preventDefault();
-      
+      createAddDialog("Add new Tag", "Enter tag name", (value) => {
+        ev.preventDefault();
+
         uniqueTags.push(value);
-        tagSelect.innerHTML =`
+        tagSelect.innerHTML = `
         <option value="" disabled selected>Select Tag</option>
-        ${uniqueTags.map((item) => {
-          return `
+        ${uniqueTags
+          .map((item) => {
+            return `
             <option value="${item}">${item}</option>
-          `
-        }).join("")}
+          `;
+          })
+          .join("")}
         <option value="add">Add new Tag</option>
-        `
+        `;
         tagSelect.value = value;
-    });
-  });
-
-    notesBody.querySelector("#saveEditedNote").addEventListener("click", function(ev) {
-      ev.preventDefault();
-      const newTitle = notesBody.querySelector("#editNoteTitle").value.trim();
-      const newFolder = notesBody.querySelector("#editFolderSelect").value.trim();
-      const newTag = notesBody.querySelector("#editTagSelect").value.trim();
-      const newContent = notesBody.querySelector("#editNoteContent").value.trim();
-      const date = new Date().toDateString();
-      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-      if (!newTitle || !newFolder || !newTag || !newContent) {
-        showDialog("Empty Fields", "Please fill in all fields before saving the note.");
-        return;
-      }
-
-      const idx = data.findIndex(item => item.title === title && item.folder === folder);
-      if (idx !== -1) {
-        data[idx] = {
-          folder: newFolder,
-          title: newTitle,
-          tag: newTag,
-          content: newContent,
-          date,
-          time
-        };
-        localStorage.setItem("data", JSON.stringify(data));
-        notesSidebarReset();
-      }
+      });
     });
 
-    notesBody.querySelector("#cancelEditedNote").addEventListener("click", function(ev) {
-      ev.preventDefault();
-      showConfirmDialog("Cancel Edit?", "Are you sure you want to cancel editing this note?", notesSidebarReset);
-    });
+    notesBody
+      .querySelector("#saveEditedNote")
+      .addEventListener("click", function (ev) {
+        ev.preventDefault();
+        const newTitle = notesBody.querySelector("#editNoteTitle").value.trim();
+        const newFolder = notesBody
+          .querySelector("#editFolderSelect")
+          .value.trim();
+        const newTag = notesBody.querySelector("#editTagSelect").value.trim();
+        const newContent = notesBody
+          .querySelector("#editNoteContent")
+          .value.trim();
+        const date = new Date().toDateString();
+        const time = new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+        if (!newTitle || !newFolder || !newTag || !newContent) {
+          showDialog(
+            "Empty Fields",
+            "Please fill in all fields before saving the note."
+          );
+          return;
+        }
+
+        const idx = data.findIndex(
+          (item) => item.title === title && item.folder === folder
+        );
+        if (idx !== -1) {
+          data[idx] = {
+            folder: newFolder,
+            title: newTitle,
+            tag: newTag,
+            content: newContent,
+            date,
+            time,
+          };
+          localStorage.setItem("data", JSON.stringify(data));
+          notesSidebarReset();
+        }
+      });
+
+    notesBody
+      .querySelector("#cancelEditedNote")
+      .addEventListener("click", function (ev) {
+        ev.preventDefault();
+        showConfirmDialog(
+          "Cancel Edit?",
+          "Are you sure you want to cancel editing this note?",
+          notesSidebarReset
+        );
+      });
   }
 });
