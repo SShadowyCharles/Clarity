@@ -225,7 +225,7 @@ main{
 .header-title{
     font-size: 1.5rem;
     font-weight: 600;
-    margin-left: 2%;
+    margin-left: 10px;
 }
 
 .options{
@@ -528,7 +528,21 @@ main{
     opacity: 0.8;
 }
 
-.add-note-form{
+.edit-note{
+    width: calc(100% - 40px);
+    height: calc(100vh - 100px);
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    justify-self: center;
+    align-items: flex-start;
+    justify-content: flex-start;
+    background-color: #404040;
+    border-radius: 21px;
+    opacity: 0.8;
+}
+
+.note-form{
     width: 100%;
     height: 100%;
     display: flex;
@@ -569,14 +583,14 @@ main{
     justify-content: space-evenly;
 }
 
-.add-note-label{
+.note-label{
     font-size: 2rem;
     font-weight: 600;
     margin-top: -7px;
     width: 70px;
 }
 
-.add-note-title{
+.note-title{
     width: calc(100% - 90px);
     height: 50px;
     font-size: 1.5rem;
@@ -587,7 +601,7 @@ main{
     background-color: transparent;
 }
 
-.add-note-folder{
+.note-folder{
     width: 30%;
     height: 35px;
     outline: none;
@@ -609,7 +623,7 @@ main{
     background-color: #434343;
 }
 
-.add-note-tag{
+.note-tag{
     width: 80%;
     height: 35px;
     outline: none;
@@ -630,7 +644,7 @@ main{
     padding: 20px;
 }
 
-.add-note-textarea{
+.note-textarea{
     width: 100%;
     height: 100%;
     font-size: 1.2rem;
@@ -675,7 +689,7 @@ main{
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-.form{
+.dialog form{
     width: 100%;
     height: 100%;
     display: flex;
@@ -685,19 +699,19 @@ main{
     padding: 20px;
 }
 
-.form h3{
+.dialog form h3{
     font-size: 1.5rem;
     color: #fefefe;
     margin-bottom: 10px;
 }
 
-.form p{
+.dialog form p{
     font-size: 1rem;
     color: #fefefe;
     margin-bottom: 20px;
 }
 
-.form input{
+.dialog form input{
     width: 80%;
     height: 40px;
     border: none;
@@ -709,7 +723,7 @@ main{
     font-size: 1rem;
 }
 
-.buttons{
+.dialog form .buttons{
     width: 100%;
     height: 40px;
     display: flex;
@@ -718,7 +732,7 @@ main{
     justify-content: space-evenly;
 }
 
-.buttons button{
+.dialog form .buttons button{
     width: 30%;
     height: 100%;
     border: none;
@@ -768,11 +782,10 @@ main{
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+    justify-content: space-evenly;
 }
 
-.note-tag{
+.open-note .note-tag{
     width: auto;
     height: 35px;
     outline: none;
@@ -787,8 +800,9 @@ main{
     justify-content: center;
 }
 
-.edit-note{
-    width: 20%;
+.edit-note-button{
+    width: auto;
+    padding: 5px;
     height: 35px;
     outline: none;
     border: none;
@@ -803,7 +817,8 @@ main{
 }
 
 .delete-note{
-    width: 20%;
+    padding: 5px;
+    width: auto;
     height: 35px;
     outline: none;
     border: none;

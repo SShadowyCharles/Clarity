@@ -6,6 +6,8 @@ const contentHeader = document.querySelector(".header-title");
 const notesBody = document.getElementById("notesBody");
 const addNoteIcon = document.getElementById("addNoteIcon");
 const backButton = document.getElementById("backButton");
+let uniqueFolders = [];
+let uniqueTags = [];
 
 function getPastelColor() {
   const hue = Math.floor(Math.random() * 360);
@@ -33,6 +35,8 @@ const navIds = [
     body: "notesBody",
   },
 ];
+
+
 
 function changeActiveNav() {
   notesSidebarReset();
@@ -82,6 +86,11 @@ function getData () {
 
 let data = getData();
 
+function updateFoldersAndTags(){
+  uniqueFolders = [...new Set(data.map(item => item.folder))];
+  uniqueTags = [...new Set(data.map(item => item.tag))];
+}
+
 let currentNote = {
   folder: "default",
   title: "",
@@ -106,7 +115,7 @@ function submitData() {
 function updateNotesSidebar() {
   notesFolderList.innerHTML= "";
   contentHeader.textContent = "My Notes";
-  const uniqueFolders = [...new Set(data.map(item => item.folder))];
+  updateFoldersAndTags();
   if (Array.isArray(data) && data.length > 0) {
     uniqueFolders.forEach((item) => {
       const li = document.createElement("li");
@@ -147,6 +156,8 @@ function updateNotesSidebar() {
 
     allFolders.forEach((item) => {
       item.addEventListener("click", () => {
+        backButton.classList.add("hidden");
+        contentHeader.textContent = item.querySelector("h4").textContent;
         allFolders.forEach((folder) =>  {
           folder.classList.remove("active-folder");
         });
@@ -207,7 +218,7 @@ function updateNotesSidebar() {
                   <h3>${noteObj.title}</h3>
                   <article class="misc">
                     <section class="note-tag">${noteObj.tag}</section>
-                    <section class="edit-note">edit</section>
+                    <section class="edit-note-button">edit</section>
                     <section class="delete-note">delete</section>
                   </article>
                 </section>
@@ -242,31 +253,119 @@ function notesSidebarReset(){
   };
   data = getData();
   updateNotesSidebar();
+  contentHeader.textContent = "My Notes";
+  backButton.classList.add("hidden");
+}
+
+function showDialog(title, message) {
+  const dialogbox = document.createElement("dialog");
+  dialogbox.classList.add("dialog");
+  dialogbox.innerHTML= `
+    <form method="dialogbox" class="note-form">
+      <h3>${title}</h3>
+      <p>${message}</p>
+      <section class="buttons">
+        <button type="submit">OK</button>
+      </section>
+    </form>
+  `;
+  document.body.appendChild(dialogbox);
+  dialogbox.showModal();
+  dialogbox.addEventListener("submit", () => {
+    dialogbox.close();
+    dialogbox.remove();
+  });
+}
+
+function showConfirmDialog(title, message, onsub){
+  const dialogbox = document.createElement("dialog");
+  dialogbox.classList.add("dialog");
+  dialogbox.innerHTML= `
+    <form class="note-form">
+      <h3>${title}</h3>
+      <p>${message}</p>
+      <section class="buttons">
+        <button type="submit">Yes</button>
+        <button id="cancelDialogButton">No</button>
+      </section>
+    </form>
+  `;
+  document.body.appendChild(dialogbox);
+  dialogbox.showModal();
+
+  const cancelButton = dialogbox.querySelector("#cancelDialogButton");
+  cancelButton.addEventListener("click", () => {
+    dialogbox.close();
+    dialogbox.remove();
+  });
+
+  const form = dialogbox.querySelector("form");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    onsub();
+    dialogbox.close();
+    dialogbox.remove();
+  });
+}
+
+function createAddDialog(title, inputPlaceholder, onsub){
+  const dialogbox = document.createElement("dialog");
+  dialogbox.classList.add("dialog");
+  dialogbox.innerHTML= `
+    <form class="note-form">
+      <h3>${title}</h3>
+      <input type="text" id="dialogInput" placeholder="${inputPlaceholder}" required />
+      <section class="buttons">
+        <button type="submit">Yes</button>
+        <button id="cancelDialogButton">No</button>
+      </section>
+    </form>
+  `;
+  document.body.appendChild(dialogbox);
+  dialogbox.showModal();
+
+  const cancelButton = dialogbox.querySelector("#cancelDialogButton");
+  cancelButton.addEventListener("click", () => {
+    dialogbox.close();
+    dialogbox.remove();
+  });
+
+  const form = dialogbox.querySelector("form");
+  const input = dialogbox.querySelector("#dialogInput");
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const value = input.value.trim();
+    if (value){
+      onsub(value);
+    }
+    dialogbox.close();
+    dialogbox.remove();
+  });
 }
 
 addNoteIcon.addEventListener("click", () =>{
   notesBody.innerHTML = "";
   contentHeader.textContent = "New Note";
   const addNote = document.createElement("article");
-  const uniqueFolders = [...new Set(data.map(item => item.folder))];
-  const uniqueTags = [...new Set(data.map(item => item.tag))];
+  updateFoldersAndTags();
   addNote.classList.add("add-note");
   addNote.innerHTML = 
   `
-    <form action="" method="post" class="add-note-form" id="addNoteForm">
+    <form action="" method="post" class="note-form" id="addNoteForm">
       <p class="breadcrumb">Notes/myNotes</p>
       <div class="note-header">
         <section>
-          <label for="noteTitle" class="add-note-label">Title:</label>
+          <label for="noteTitle" class="note-label">Title:</label>
           <input
             type="text"
             id="noteTitle"
-            class="add-note-title"
+            class="note-title"
             placeholder="Enter note title"
           />
         </section>
         <section>
-          <select name="Folder" id="folderSelect" class="add-note-folder">
+          <select name="Folder" id="folderSelect" class="note-folder">
             <option value="" disabled selected>Select Folder</option>
             ${uniqueFolders.map((item) => {
                return `
@@ -279,7 +378,7 @@ addNoteIcon.addEventListener("click", () =>{
           <button class="form-button" id="cancelNote">Cancel</button>
         </section>
         <section>
-          <select name="tag" id="tagSelect" class="add-note-tag">
+          <select name="tag" id="tagSelect" class="note-tag">
             <option value="" disabled selected>Select Tag</option>
             ${uniqueTags.map((item) => {
                 return `
@@ -291,7 +390,7 @@ addNoteIcon.addEventListener("click", () =>{
         </section>
       </div>
       <div class="note-body">
-        <textarea name="addNoteContent" id="addNoteContent" class="add-note-textarea" placeholder="Add notes here"></textarea>
+        <textarea name="addNoteContent" id="addNoteContent" class="note-textarea" placeholder="Add notes here"></textarea>
       </div>
       <div class="note-footer">
         <p>${new Date().toDateString()}</p>
@@ -301,27 +400,9 @@ addNoteIcon.addEventListener("click", () =>{
   const folderSelect = addNote.querySelector("#folderSelect");
 
   folderSelect.addEventListener("change", (e) => {
-    if (e.target.value === "add") {
-      const dialog = document.createElement("dialog");
-      dialog.classList.add("dialog");
-      dialog.innerHTML = `
-        <form method="dialog" class="form" id="addFolderForm">
-          <h3>Add New Folder</h3>
-          <input type="text" id="newFolderName" placeholder="Enter folder name" required />
-          <section class="buttons">
-            <button type="submit">Add</button>
-            <button type="button" id="dialogCancelButton">Cancel</button>
-          </section>
-        </form>
-      `;
-      const addFolderForm = dialog.querySelector("#addFolderForm");
-      const newFolderNameInput = dialog.querySelector("#newFolderName");
-      const cancelButton = dialog.querySelector("#dialogCancelButton");
-      addFolderForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const newFolderName = newFolderNameInput.value.trim();
-        if (newFolderName){
-          uniqueFolders.push(newFolderName);
+      e.preventDefault();
+      createAddDialog("Add new Folder", "Input new folder name here", (value) => {
+        uniqueFolders.push(value);
           folderSelect.innerHTML =`
           <option value="" disabled selected>Select Folder</option>
           ${uniqueFolders.map((item) => {
@@ -331,69 +412,28 @@ addNoteIcon.addEventListener("click", () =>{
           }).join("")}
           <option value="add">Add new Folder</option>
           `
-          folderSelect.value = newFolderName;
-          dialog.close();
-          dialog.remove();
-        } 
-      })
-
-      cancelButton.addEventListener("click", (e) => {
-        e.preventDefault();
-        dialog.close();
-        dialog.remove();
+          folderSelect.value = value;
       });
-      document.body.appendChild(dialog);
-      dialog.showModal();
-    }
   });
 
   const tagSelect = addNote.querySelector("#tagSelect");
 
   tagSelect.addEventListener("change", (e) => {
-    if (e.target.value === "add") {
-      const dialog = document.createElement("dialog");
-      dialog.classList.add("dialog");
-      dialog.innerHTML = `
-        <form method="dialog" class="form" id="addTagForm">
-          <h3>Add New Folder</h3>
-          <input type="text" id="newTagName" placeholder="Enter tag name" required />
-          <section class="buttons">
-            <button type="submit">Add</button>
-            <button type="button" id="dialogCancelButton">Cancel</button>
-          </section>
-        </form>
-      `;
-      const addTagForm = dialog.querySelector("#addTagForm");
-      const newTagNameInput = dialog.querySelector("#newTagName");
-      const cancelButton = dialog.querySelector("#dialogCancelButton");
-      addTagForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const newTagName = newTagNameInput.value.trim();
-        if (newTagName){
-          uniqueTags.push(newTagName);
-          tagSelect.innerHTML =`
-          <option value="" disabled selected>Select Tag</option>
-          ${uniqueTags.map((item) => {
-            return `
-              <option value="${item}">${item}</option>
-            `
-          }).join("")}
-          <option value="add">Add new Tag</option>
+    createAddDialog("Add new Tag", "Enter tag name", (value)=>{
+      e.preventDefault();
+      
+        uniqueTags.push(value);
+        tagSelect.innerHTML =`
+        <option value="" disabled selected>Select Tag</option>
+        ${uniqueTags.map((item) => {
+          return `
+            <option value="${item}">${item}</option>
           `
-          tagSelect.value = newTagName;
-          dialog.close();
-          dialog.remove();
-        } 
-      })
-
-      cancelButton.addEventListener("click", (e) => {
-        e.preventDefault();
-        dialog.close();
-        dialog.remove();
-      });
-      document.body.appendChild(dialog);
-      dialog.showModal();
-    }
+        }).join("")}
+        <option value="add">Add new Tag</option>
+        `
+        tagSelect.value = value;
+    });
   });
 
   const saveNoteButton = addNote.querySelector("#saveNote");
@@ -401,59 +441,23 @@ addNoteIcon.addEventListener("click", () =>{
 
   saveNoteButton.addEventListener("click", (e) => {
     e.preventDefault();
-    const titleInput = addNote.querySelector("#noteTitle");
-    const folderSelect = addNote.querySelector("#folderSelect");
-    const tagSelect = addNote.querySelector("#tagSelect");
-    const contentTextarea = addNote.querySelector("#addNoteContent");
+    const titleInput = addNote.querySelector("#noteTitle").value.trim();
+    const folderSelect = addNote.querySelector("#folderSelect").value.trim();
+    const tagSelect = addNote.querySelector("#tagSelect").value.trim();
+    const contentTextarea = addNote.querySelector("#addNoteContent").value.trim();
     const date = new Date();
     const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    titleInput.value = titleInput.value.trim();
-    folderSelect.value = folderSelect.value.trim();
-    tagSelect.value = tagSelect.value.trim();
-    contentTextarea.value = contentTextarea.value.trim();
-    if(data.some((item) => item.title === titleInput.value && item.folder === folderSelect.value)) {
-      const existingNoteWarning = document.createElement("dialog");
-      existingNoteWarning.classList.add("dialog");
-      existingNoteWarning.innerHTML = `
-        <form method="dialog" class="form">
-          <h3>Note Already Exists</h3>
-          <p>A note with the title "${titleInput.value}" already exists in the folder "${folderSelect.value}".</p>
-          <section class="buttons">
-            <button type="submit">OK</button>
-          </section>
-        </form>
-      `;
-      document.body.appendChild(existingNoteWarning);
-      existingNoteWarning.showModal();
-      existingNoteWarning.addEventListener("submit", () => {
-        existingNoteWarning.close();
-        existingNoteWarning.remove();
-      });
+    if(data.some((item) => item.title === titleInput && item.folder === folderSelect)) {
+      showDialog("Note Already Exists", `A note with the title "${titleInput}" already exists in the folder "${folderSelect}".`);
       return;
-    } else if(titleInput.value === "" || folderSelect.value === "" || tagSelect.value === "" || contentTextarea.value === "") {
-      const emptyFieldsWarning = document.createElement("dialog");
-      emptyFieldsWarning.classList.add("dialog");
-      emptyFieldsWarning.innerHTML = `
-        <form method="dialog" class="form">
-          <h3>Empty Fields</h3>
-          <p>Please fill in all fields before saving the note.</p>
-          <section class="buttons">
-            <button type="submit">OK</button>
-          </section>
-        </form>
-      `;
-      document.body.appendChild(emptyFieldsWarning);
-      emptyFieldsWarning.showModal();
-      emptyFieldsWarning.addEventListener("submit", () => {
-        emptyFieldsWarning.close();
-        emptyFieldsWarning.remove();
-      }); 
+    } else if(titleInput === "" || folderSelect === "" || tagSelect === "" || contentTextarea === "") {
+      showDialog("Empty Fields", "Please fill in all fields before saving the note.");
     } else {
       currentNote ={
-        folder: folderSelect.value,
-        title: titleInput.value,
-        tag: tagSelect.value,
-        content: contentTextarea.value,
+        folder: folderSelect,
+        title: titleInput,
+        tag: tagSelect,
+        content: contentTextarea,
         date: date.toDateString(),
         time: time,
       }
@@ -465,34 +469,7 @@ addNoteIcon.addEventListener("click", () =>{
 
   cancelNoteButton.addEventListener("click", (e) => {
     e.preventDefault();
-    const cancelDialog = document.createElement("dialog");
-    cancelDialog.classList.add("dialog");
-    cancelDialog.innerHTML = `
-      <form method="dialog" class="form">
-      <h3>Cancel Note Creation</h3>  
-        <p>Are you sure you want to cancel creating this note? All unsaved changes will be lost.</p>
-        <section class="buttons">
-        <button type="submit">Yes, Cancel</button>
-        <button type="button" id="cancelDialogButton">No, Go Back</button>
-        </section>
-      </form>
-    `
-    document.body.appendChild(cancelDialog);
-    cancelDialog.showModal();
-    const cancelDialogButton = cancelDialog.querySelector("#cancelDialogButton");
-    cancelDialogButton.addEventListener("click", (e) => {
-      e.preventDefault();
-      cancelDialog.close();
-      cancelDialog.remove();
-    });
-
-    const cancelDialogForm = cancelDialog.querySelector("form");
-    cancelDialogForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      cancelDialog.close();
-      cancelDialog.remove();
-      notesSidebarReset();
-    });
+    showConfirmDialog("Cancel Note Creation", "Are you sure you want to cancel creating this note? All unsaved changes will be lost.", notesSidebarReset());
   });
   notesBody.appendChild(addNote);
 });
@@ -503,46 +480,19 @@ notesBody.addEventListener("click", (e) => {
     e.stopPropagation();
     const noteElement = e.target.closest(".open-note");
     const title = noteElement.querySelector("h3").textContent;
-    const tag = noteElement.querySelector(".note-tag").textContent;
     const breadcrumb = noteElement.querySelector(".breadcrumb").textContent;
     const folder = breadcrumb.split("/")[0];
-    const deleteDialog = document.createElement("dialog");
-    deleteDialog.classList.add("dialog");
-    deleteDialog.innerHTML = `
-      <form method="dialog" class="form" id="deleteNoteForm">
-        <h3>Delete Note?</h3>
-        <p>Are you sure you want to delete the note titled "${title}"?</p>
-        <section class="buttons">
-          <button type="submit">Delete</button>
-          <button type="button" id="dialogCancelButton">Cancel</button>
-        </section>
-      </form>
-    `
-    const deleteNoteForm = deleteDialog.querySelector("#deleteNoteForm");
-    const cancelButton = deleteDialog.querySelector("#dialogCancelButton");
-    cancelButton.addEventListener("click", (e) => {
-      e.preventDefault();
-      deleteDialog.close();
-      deleteDialog.remove();
-    })
-    deleteNoteForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const note = data.find(item => item.title === title && item.folder === folder && item.tag === tag);
-      if (note) {
-        const idx = data.indexOf(note);
-        if (idx !== -1) {
-          data.splice(idx, 1);
-          localStorage.setItem("data", JSON.stringify(data));
-          notesSidebarReset();
-          deleteDialog.close();
-          deleteDialog.remove();
-        }
+    showConfirmDialog("Delete Note?", "Are you sure you want to delete this note?", () => {
+      const note = data.find(item => item.title === title && item.folder === folder)
+      if (note){
+        const noteIndex = data.indexOf(note);
+        data.splice(noteIndex, 1);
+        localStorage.setItem("data", JSON.stringify(data));
+        notesSidebarReset();
       }
     });
-    document.body.appendChild(deleteDialog);
-    deleteDialog.showModal();
   }
-  if (e.target.classList.contains("edit-note")) {
+  if (e.target.classList.contains("edit-note-button")) {
     e.stopPropagation();
     const noteElement = e.target.closest(".open-note");
     const title = noteElement.querySelector("h3").textContent;
@@ -553,20 +503,20 @@ notesBody.addEventListener("click", (e) => {
 
     notesBody.innerHTML = `
       <article class="add-note">
-        <form action="" method="post" class="add-note-form" id="editNoteForm">
+        <form action="" method="post" class="note-form" id="editNoteForm">
           <p class="breadcrumb">${breadcrumb}</p>
           <div class="note-header">
             <section>
-              <label for="editNoteTitle" class="add-note-label">Title:</label>
+              <label for="editNoteTitle" class="note-label">Title:</label>
               <input
                 type="text"
                 id="editNoteTitle"
-                class="add-note-title"
+                class="note-title"
                 value="${title}"
               />
             </section>
             <section>
-              <select name="Folder" id="editFolderSelect" class="add-note-folder">
+              <select name="Folder" id="editFolderSelect" class="note-folder">
                 <option value="" disabled>Select Folder</option>
                 ${[...new Set(data.map(item => item.folder))].map((item) => `
                   <option value="${item}" ${item === folder ? "selected" : ""}>${item}</option>
@@ -577,7 +527,7 @@ notesBody.addEventListener("click", (e) => {
               <button class="form-button" id="cancelEditedNote">Cancel</button>
             </section>
             <section>
-              <select name="tag" id="editTagSelect" class="add-note-tag">
+              <select name="tag" id="editTagSelect" class="note-tag">
                 <option value="" disabled>Select Tag</option>
                 ${[...new Set(data.map(item => item.tag))].map((item) => `
                   <option value="${item}" ${item === tag ? "selected" : ""}>${item}</option>
@@ -587,7 +537,7 @@ notesBody.addEventListener("click", (e) => {
             </section>
           </div>
           <div class="note-body">
-            <textarea name="editNoteContent" id="editNoteContent" class="add-note-textarea" placeholder="Edit notes here">${content}</textarea>
+            <textarea name="editNoteContent" id="editNoteContent" class="note-textarea" placeholder="Edit notes here">${content}</textarea>
           </div>
           <div class="note-footer">
             <p>${new Date().toDateString()}</p>
@@ -598,150 +548,57 @@ notesBody.addEventListener("click", (e) => {
     `;
 
     const folderSelect = notesBody.querySelector("#editFolderSelect");
-    folderSelect.addEventListener("change", (e) => {
-      if (e.target.value === "add") {
-        const dialog = document.createElement("dialog");
-        dialog.classList.add("dialog");
-        dialog.innerHTML = `
-          <form method="dialog" class="form" id="addFolderForm">
-            <h3>Add New Folder</h3>
-            <input type="text" id="newFolderName" placeholder="Enter folder name" required />
-            <section class="buttons">
-              <button type="submit">Add</button>
-              <button type="button" id="dialogCancelButton">Cancel</button>
-            </section>
-          </form>
-        `;
-        const addFolderForm = dialog.querySelector("#addFolderForm");
-        const newFolderNameInput = dialog.querySelector("#newFolderName");
-        const cancelButton = dialog.querySelector("#dialogCancelButton");
-        addFolderForm.addEventListener("submit", (e) => {
-          e.preventDefault();
-          const newFolderName = newFolderNameInput.value.trim();
-          if (newFolderName){
-            const uniqueFolders = [...new Set(data.map(item => item.folder)), newFolderName];
-            folderSelect.innerHTML =`
-              <option value="" disabled>Select Folder</option>
-              ${uniqueFolders.map((item) => `
-                <option value="${item}">${item}</option>
-              `).join("")}
+    folderSelect.addEventListener("change", (ev) => {
+      if (ev.target.value === "add") {
+        folderSelect.addEventListener("change", (ev) => {
+          ev.preventDefault();
+          createAddDialog("Add new Folder", "Input new folder name here", (value) => {
+            uniqueFolders.push(value);
+              folderSelect.innerHTML =`
+              <option value="" disabled selected>Select Folder</option>
+              ${uniqueFolders.map((item) => {
+                return `
+                  <option value="${item}">${item}</option>
+                `
+              }).join("")}
               <option value="add">Add new Folder</option>
-            `;
-            folderSelect.value = newFolderName;
-            dialog.close();
-            dialog.remove();
-          } 
+              `
+              folderSelect.value = value;
+            });
         });
-        cancelButton.addEventListener("click", (e) => {
-          e.preventDefault();
-          dialog.close();
-          dialog.remove();
-        });
-        document.body.appendChild(dialog);
-        dialog.showModal();
       }
     });
 
     const tagSelect = notesBody.querySelector("#editTagSelect");
-    tagSelect.addEventListener("change", (e) => {
-      if (e.target.value === "add") {
-        const dialog = document.createElement("dialog");
-        dialog.classList.add("dialog");
-        dialog.innerHTML = `
-          <form method="dialog" class="form" id="addTagForm">
-            <h3>Add New Tag</h3>
-            <input type="text" id="newTagName" placeholder="Enter tag name" required />
-            <section class="buttons">
-              <button type="submit">Add</button>
-              <button type="button" id="dialogCancelButton">Cancel</button>
-            </section>
-          </form>
-        `;
-        const addTagForm = dialog.querySelector("#addTagForm");
-        const newTagNameInput = dialog.querySelector("#newTagName");
-        const cancelButton = dialog.querySelector("#dialogCancelButton");
-        addTagForm.addEventListener("submit", (e) => {
-          e.preventDefault();
-          const newTagName = newTagNameInput.value.trim();
-          if (newTagName){
-            const uniqueTags = [...new Set(data.map(item => item.tag)), newTagName];
-            tagSelect.innerHTML =`
-              <option value="" disabled>Select Tag</option>
-              ${uniqueTags.map((item) => `
-                <option value="${item}">${item}</option>
-              `).join("")}
-              <option value="add">Add new Tag</option>
-            `;
-            tagSelect.value = newTagName;
-            dialog.close();
-            dialog.remove();
-          } 
-        });
-        cancelButton.addEventListener("click", (e) => {
-          e.preventDefault();
-          dialog.close();
-          dialog.remove();
-        });
-        document.body.appendChild(dialog);
-        dialog.showModal();
-      }
+    tagSelect.addEventListener("change", (ev) => {
+    createAddDialog("Add new Tag", "Enter tag name", (value)=>{
+      ev.preventDefault();
+      
+        uniqueTags.push(value);
+        tagSelect.innerHTML =`
+        <option value="" disabled selected>Select Tag</option>
+        ${uniqueTags.map((item) => {
+          return `
+            <option value="${item}">${item}</option>
+          `
+        }).join("")}
+        <option value="add">Add new Tag</option>
+        `
+        tagSelect.value = value;
     });
+  });
 
     notesBody.querySelector("#saveEditedNote").addEventListener("click", function(ev) {
       ev.preventDefault();
-      const titleInput = notesBody.querySelector("#editNoteTitle");
-      const folderInput = notesBody.querySelector("#editFolderSelect");
-      const tagInput = notesBody.querySelector("#editTagSelect");
-      const contentInput = notesBody.querySelector("#editNoteContent");
-      const newTitle = titleInput.value.trim();
-      const newFolder = folderInput.value.trim();
-      const newTag = tagInput.value.trim();
-      const newContent = contentInput.value.trim();
+      const newTitle = notesBody.querySelector("#editNoteTitle").value.trim();
+      const newFolder = notesBody.querySelector("#editFolderSelect").value.trim();
+      const newTag = notesBody.querySelector("#editTagSelect").value.trim();
+      const newContent = notesBody.querySelector("#editNoteContent").value.trim();
       const date = new Date().toDateString();
       const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
       if (!newTitle || !newFolder || !newTag || !newContent) {
-        const emptyFieldsWarning = document.createElement("dialog");
-        emptyFieldsWarning.classList.add("dialog");
-        emptyFieldsWarning.innerHTML = `
-          <form method="dialog" class="form">
-            <h3>Empty Fields</h3>
-            <p>Please fill in all fields before saving the note.</p>
-            <section class="buttons">
-              <button type="submit">OK</button>
-            </section>
-          </form>
-        `;
-        document.body.appendChild(emptyFieldsWarning);
-        emptyFieldsWarning.showModal();
-        emptyFieldsWarning.addEventListener("submit", () => {
-          emptyFieldsWarning.close();
-          emptyFieldsWarning.remove();
-        }); 
-        return;
-      }
-
-      const duplicate = data.some(item => 
-        item.title === newTitle && item.folder === newFolder && !(item.title === title && item.folder === folder)
-      );
-      if (duplicate) {
-        const existingNoteWarning = document.createElement("dialog");
-        existingNoteWarning.classList.add("dialog");
-        existingNoteWarning.innerHTML = `
-          <form method="dialog" class="form">
-            <h3>Note Already Exists</h3>
-            <p>A note with the title "${newTitle}" already exists in the folder "${newFolder}".</p>
-            <section class="buttons">
-              <button type="submit">OK</button>
-            </section>
-          </form>
-        `;
-        document.body.appendChild(existingNoteWarning);
-        existingNoteWarning.showModal();
-        existingNoteWarning.addEventListener("submit", () => {
-          existingNoteWarning.close();
-          existingNoteWarning.remove();
-        });
+        showDialog("Empty Fields", "Please fill in all fields before saving the note.");
         return;
       }
 
@@ -762,33 +619,7 @@ notesBody.addEventListener("click", (e) => {
 
     notesBody.querySelector("#cancelEditedNote").addEventListener("click", function(ev) {
       ev.preventDefault();
-      const cancelDialog = document.createElement("dialog");
-      cancelDialog.classList.add("dialog");
-      cancelDialog.innerHTML = `
-        <form method="dialog" class="form">
-          <h3>Cancel Edit</h3>  
-          <p>Are you sure you want to cancel editing this note? All unsaved changes will be lost.</p>
-          <section class="buttons">
-            <button type="submit">Yes, Cancel</button>
-            <button type="button" id="cancelDialogButton">No, Go Back</button>
-          </section>
-        </form>
-      `;
-      document.body.appendChild(cancelDialog);
-      cancelDialog.showModal();
-      const cancelDialogButton = cancelDialog.querySelector("#cancelDialogButton");
-      cancelDialogButton.addEventListener("click", (e) => {
-        e.preventDefault();
-        cancelDialog.close();
-        cancelDialog.remove();
-      });
-      const cancelDialogForm = cancelDialog.querySelector("form");
-      cancelDialogForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        cancelDialog.close();
-        cancelDialog.remove();
-        notesSidebarReset();
-      });
+      showConfirmDialog("Cancel Edit?", "Are you sure you want to cancel editing this note?", notesSidebarReset);
     });
   }
 });
