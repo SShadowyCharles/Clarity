@@ -497,20 +497,24 @@ main{
 }
 
 .lesson-box h3{
-    font-size: 1.2rem;
+    font-size: 2rem;
     color: #333333;
     margin-bottom: 10px;
 }
 
 .lesson-box-tag {
     width: auto;
-    height: 20px;
+    height: auto;
     padding: 0 5px;
     margin: 0 auto;
     color: #ffffff;
     border-radius: 5px;
-    font-size: 0.8rem;
+    font-size: 1rem;
     background-color: #36454F;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Note Form */
@@ -791,7 +795,6 @@ main{
     outline: none;
     border: none;
     color: #ffffff;
-    background-color: #434343;
     border-radius: 10px;
     padding: 0 10px;
     font-size: 1rem;
@@ -830,6 +833,11 @@ main{
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.misc-icons{
+    width: 30px;
+    height: 30px;
 }
 
 .open-note-body{

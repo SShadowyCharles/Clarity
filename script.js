@@ -15,6 +15,32 @@ function getPastelColor() {
   return pastel;
 }
 
+function getTagColor(){
+  const contrastingColors = [
+    "#2D3747", // Dark slate blue
+    "#1A1A2E", // Deep navy
+    "#4A2545", // Dark purple
+    "#16262E", // Dark teal
+    "#333333", // Charcoal gray
+    "#D64045", // Deep red
+    "#5C6BC0", // Rich indigo
+    "#FF6B6B", // Coral red
+    "#6A4C93", // Deep lavender
+    "#2A9D8F", // Dark teal green
+    "#8B5A2B", // Dark tan
+    "#6B4226", // Coffee brown
+    "#5E3023", // Deep rust
+    "#4E3620", // Dark chocolate
+    "#3D2B1F", // Almost black brown
+    "#0A2463", // Deep sapphire
+    "#3E6680", // Steel blue
+    "#2E5266", // Slate blue
+    "#1C3738", // Dark pine
+    "#0B3C49"  // Deep ocean
+  ];
+  return contrastingColors[Math.floor(Math.random() * contrastingColors.length)];
+}
+
 const navIds = [
   {
     id: "homeNav",
@@ -187,6 +213,8 @@ function updateNotesSidebar() {
             <h3>${lesson.textContent}</h3>
             <div class="lesson-box-tag">${noteObj.tag}</div>
           ` 
+          const lessonBoxTag = lessonBox.querySelector(".lesson-box-tag");
+          lessonBoxTag.style.backgroundColor = getTagColor();
           lessonBox.style.backgroundColor = getPastelColor();
           lessonBox.addEventListener("click", () => {
             backButton.classList.remove("hidden");
@@ -218,8 +246,12 @@ function updateNotesSidebar() {
                   <h3>${noteObj.title}</h3>
                   <article class="misc">
                     <section class="note-tag">${noteObj.tag}</section>
-                    <section class="edit-note-button">edit</section>
-                    <section class="delete-note">delete</section>
+                    <section class="edit-note-button">
+                      <img src="Images/edit.svg" alt="Edit Note" class="misc-icons edit-button" />
+                    </section>
+                    <section class="delete-note">
+                      <img src="Images/trash.svg" alt="Delete Note" class="misc-icons delete-button" />
+                    </section>
                   </article>
                 </section>
                 <section class="open-note-body">
@@ -231,6 +263,7 @@ function updateNotesSidebar() {
                 </section>
               </article>
             `;
+            
           })
           lessonBody.appendChild(lessonBox);
         })
@@ -476,7 +509,7 @@ addNoteIcon.addEventListener("click", () =>{
 
 
 notesBody.addEventListener("click", (e) => {
-  if(e.target.classList.contains("delete-note")) {
+  if(e.target.classList.contains("delete-button")) {
     e.stopPropagation();
     const noteElement = e.target.closest(".open-note");
     const title = noteElement.querySelector("h3").textContent;
@@ -492,7 +525,7 @@ notesBody.addEventListener("click", (e) => {
       }
     });
   }
-  if (e.target.classList.contains("edit-note-button")) {
+  if (e.target.classList.contains("edit-button")) {
     e.stopPropagation();
     const noteElement = e.target.closest(".open-note");
     const title = noteElement.querySelector("h3").textContent;
@@ -623,5 +656,3 @@ notesBody.addEventListener("click", (e) => {
     });
   }
 });
-
-const allDeleteNotes = document.querySelectorAll(".delete-note");
