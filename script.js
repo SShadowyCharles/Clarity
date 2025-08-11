@@ -226,6 +226,11 @@ function updateNotesSidebar() {
             backButton.classList.remove("hidden");
             backButton.addEventListener("click", () => {
               notesSidebarReset();
+              const noteElement = e.target.closest(".open-note");
+              if (noteElement) {
+                const breadcrumb = noteElement.querySelector(".breadcrumb");
+                const folderName = breadcrumb.textContent.split("/")[0];
+              }
               backButton.classList.add("hidden");
             });
 
@@ -269,6 +274,8 @@ function updateNotesSidebar() {
                 </section>
               </article>
             `;
+            const lessonTag = notesBody.querySelector(".lesson-tag");
+            lessonTag.style.backgroundColor = getTagColor();
           });
           lessonBody.appendChild(lessonBox);
         });
