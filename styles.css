@@ -210,7 +210,7 @@ main{
     align-items: center;
     justify-content: left;
     padding-left: 10px;
-    width: 20%;
+    width: 40%;
 }
 
 .back-button{
@@ -365,6 +365,7 @@ main{
     justify-content: left;
     gap: 3% ;
     cursor: pointer;
+    padding-right: 10px;
 }
 
 .folder-wrapper figure{
@@ -881,6 +882,18 @@ main{
     align-items: left;
     justify-content: flex-start;
     padding: 20px;
+}
+
+.notes-content{
+    width: 100%;
+    height: 100%;
+    font-size: 1rem;
+    color: #ffffff;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    resize: none;
+    overflow-x:clip;
 }
 
 .open-note-footer{

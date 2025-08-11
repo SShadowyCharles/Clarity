@@ -266,7 +266,7 @@ function updateNotesSidebar() {
                   </article>
                 </section>
                 <section class="open-note-body">
-                  <p>${noteObj.content}</p>
+                  <textarea class="notes-content">${noteObj.content}</textarea>
                 </section>
                 <section class="open-note-footer">
                 <p>${noteObj.date}</p>
@@ -435,7 +435,7 @@ addNoteIcon.addEventListener("click", () => {
               .join("")}
             <option value="add" id="addTag">Add new Tag</option>
           </select>
-        </section>
+        </section>f
       </div>
       <div class="note-body">
         <textarea name="addNoteContent" id="addNoteContent" class="note-textarea" placeholder="Add notes here"></textarea>
@@ -449,43 +449,50 @@ addNoteIcon.addEventListener("click", () => {
 
   folderSelect.addEventListener("change", (e) => {
     e.preventDefault();
-    createAddDialog("Add new Folder", "Input new folder name here", (value) => {
-      uniqueFolders.push(value);
-      folderSelect.innerHTML = `
-          <option value="" disabled selected>Select Folder</option>
-          ${uniqueFolders
+    if (e.target.value === "add") {
+      createAddDialog(
+        "Add new Folder",
+        "Input new folder name here",
+        (value) => {
+          uniqueFolders.push(value);
+          folderSelect.innerHTML = `
+            <option value="" disabled selected>Select Folder</option>
+            ${uniqueFolders
+              .map((item) => {
+                return `
+                <option value="${item}">${item}</option>
+              `;
+              })
+              .join("")}
+            <option value="add">Add new Folder</option>
+            `;
+          folderSelect.value = value;
+        }
+      );
+    }
+  });
+
+  const tagSelect = addNote.querySelector("#tagSelect");
+
+  tagSelect.addEventListener("change", (e) => {
+    e.preventDefault();
+    if (e.target.value === "add") {
+      createAddDialog("Add new Tag", "Enter tag name", (value) => {
+        uniqueTags.push(value);
+        tagSelect.innerHTML = `
+          <option value="" disabled selected>Select Tag</option>
+          ${uniqueTags
             .map((item) => {
               return `
               <option value="${item}">${item}</option>
             `;
             })
             .join("")}
-          <option value="add">Add new Folder</option>
+          <option value="add">Add new Tag</option>
           `;
-      folderSelect.value = value;
-    });
-  });
-
-  const tagSelect = addNote.querySelector("#tagSelect");
-
-  tagSelect.addEventListener("change", (e) => {
-    createAddDialog("Add new Tag", "Enter tag name", (value) => {
-      e.preventDefault();
-
-      uniqueTags.push(value);
-      tagSelect.innerHTML = `
-        <option value="" disabled selected>Select Tag</option>
-        ${uniqueTags
-          .map((item) => {
-            return `
-            <option value="${item}">${item}</option>
-          `;
-          })
-          .join("")}
-        <option value="add">Add new Tag</option>
-        `;
-      tagSelect.value = value;
-    });
+        tagSelect.value = value;
+      });
+    }
   });
 
   const saveNoteButton = addNote.querySelector("#saveNote");
@@ -578,7 +585,7 @@ notesBody.addEventListener("click", (e) => {
     const noteElement = e.target.closest(".open-note");
     const title = noteElement.querySelector("h3").textContent;
     const tag = noteElement.querySelector(".lesson-tag").textContent;
-    const content = noteElement.querySelector(".open-note-body p").textContent;
+    const content = noteElement.querySelector(".notes-content").textContent;
     const breadcrumb = noteElement.querySelector(".breadcrumb").textContent;
     const folder = breadcrumb.split("/")[0];
 
@@ -646,14 +653,13 @@ notesBody.addEventListener("click", (e) => {
     const folderSelect = notesBody.querySelector("#editFolderSelect");
     folderSelect.addEventListener("change", (ev) => {
       if (ev.target.value === "add") {
-        folderSelect.addEventListener("change", (ev) => {
-          ev.preventDefault();
-          createAddDialog(
-            "Add new Folder",
-            "Input new folder name here",
-            (value) => {
-              uniqueFolders.push(value);
-              folderSelect.innerHTML = `
+        ev.preventDefault();
+        createAddDialog(
+          "Add new Folder",
+          "Input new folder name here",
+          (value) => {
+            uniqueFolders.push(value);
+            folderSelect.innerHTML = `
               <option value="" disabled selected>Select Folder</option>
               ${uniqueFolders
                 .map((item) => {
@@ -664,20 +670,20 @@ notesBody.addEventListener("click", (e) => {
                 .join("")}
               <option value="add">Add new Folder</option>
               `;
-              folderSelect.value = value;
-            }
-          );
-        });
+            folderSelect.value = value;
+          }
+        );
       }
     });
 
     const tagSelect = notesBody.querySelector("#editTagSelect");
     tagSelect.addEventListener("change", (ev) => {
-      createAddDialog("Add new Tag", "Enter tag name", (value) => {
-        ev.preventDefault();
+      if (ev.target.value === "add") {
+        createAddDialog("Add new Tag", "Enter tag name", (value) => {
+          ev.preventDefault();
 
-        uniqueTags.push(value);
-        tagSelect.innerHTML = `
+          uniqueTags.push(value);
+          tagSelect.innerHTML = `
         <option value="" disabled selected>Select Tag</option>
         ${uniqueTags
           .map((item) => {
@@ -688,8 +694,9 @@ notesBody.addEventListener("click", (e) => {
           .join("")}
         <option value="add">Add new Tag</option>
         `;
-        tagSelect.value = value;
-      });
+          tagSelect.value = value;
+        });
+      }
     });
 
     notesBody
