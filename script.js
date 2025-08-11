@@ -266,7 +266,7 @@ function updateNotesSidebar() {
                   </article>
                 </section>
                 <section class="open-note-body">
-                  <textarea class="notes-content">${noteObj.content}</textarea>
+                  <textarea class="notes-content" disabled>${noteObj.content}</textarea>
                 </section>
                 <section class="open-note-footer">
                 <p>${noteObj.date}</p>
