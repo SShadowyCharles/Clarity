@@ -210,14 +210,14 @@ main{
     align-items: center;
     justify-content: left;
     padding-left: 10px;
-    width: 40%;
+    width: 90%;
+    height: 100%;
 }
 
 .back-button{
     width: 40px;
     height: 40px;
     object-fit: cover;
-    margin-left: 2%;
     cursor: pointer;
     border-right: 2px solid #666666;
 }
@@ -684,7 +684,7 @@ main{
     border: none;
     outline: none;
     resize: none;
-    overflow-x: disable;
+    overflow-x: clip;
 }
 
 .note-footer{

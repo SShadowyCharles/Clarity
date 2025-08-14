@@ -137,8 +137,128 @@ function submitData() {
   }
 }
 
-/* Notes Sidebar Functionality */
-function updateNotesSidebar() {
+/* Open Note Constructor */
+
+function createOpenNote(noteObj) {
+  contentHeader.textContent = noteObj.folder;
+  notesBody.innerHTML = `
+    <article class="open-note">
+      <p class="breadcrumb">${noteObj.folder}/${noteObj.title}</p>
+      <section class="open-note-header">
+        <h3>${noteObj.title}</h3>
+        <article class="misc">
+          <section class="lesson-tag">${noteObj.tag}</section>
+          <section class="edit-note-button">
+            <img src="Images/edit.svg" alt="Edit Note" class="misc-icons edit-button" />
+          </section>
+          <section class="delete-note">
+            <img src="Images/trash.svg" alt="Delete Note" class="misc-icons delete-button" />
+          </section>
+        </article>
+      </section>
+      <section class="open-note-body">
+        <textarea class="notes-content" disabled>${noteObj.content}</textarea>
+      </section>
+      <section class="open-note-footer">
+      <p>${noteObj.date}</p>
+      <p>${noteObj.time}</p>
+      </section>
+    </article>
+  `;
+  const lessonTag = notesBody.querySelector(".lesson-tag");
+  lessonTag.style.backgroundColor = getTagColor();
+}
+
+/* Notes LessonBox Constructor Function */
+
+function createLessonBox(folderElement) {
+  const allLessons = document.querySelectorAll(".lesson");
+  const allCircles = document.querySelectorAll(".circle");
+  const allLessonItems = document.querySelectorAll(".notes-item");
+  const notesItemList = folderElement.nextElementSibling;
+  notesItemList.classList.remove("hidden");
+
+  notesBody.innerHTML = "";
+  const lessonBody = document.createElement("div");
+  lessonBody.classList.add("lessons-container");
+  notesBody.appendChild(lessonBody);
+  const lessonTitles = notesItemList.querySelectorAll(".lesson");
+  lessonTitles.forEach((lesson) => {
+    const lessonBox = document.createElement("div");
+    lessonBox.classList.add("lesson-box");
+    const folderName = folderElement.querySelector("h4").textContent;
+    const noteObj = data.find(
+      (note) => note.title === lesson.textContent && note.folder === folderName
+    );
+    lessonBox.innerHTML = `
+      <h3>${lesson.textContent}</h3>
+      <div class="lesson-box-tag">${noteObj.tag}</div>
+    `;
+    const lessonBoxTag = lessonBox.querySelector(".lesson-box-tag");
+    lessonBoxTag.style.backgroundColor = getTagColor();
+    lessonBox.style.backgroundColor = getPastelColor();
+    lessonBox.addEventListener("click", () => {
+      backButton.classList.remove("hidden");
+      backButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        const noteElement = backButton.nextElementSibling.textContent;
+        if (noteElement) {
+          resetHighlightedNotes(
+            document.querySelectorAll(".folder-wrapper"),
+            folderElement
+          );
+          createLessonBox(folderElement);
+        }
+        backButton.classList.add("hidden");
+      });
+
+      allCircles.forEach((circle) => {
+        circle.classList.remove("active");
+      });
+      allLessons.forEach((lesson) => {
+        lesson.classList.remove("active");
+      });
+      const lessonText = lesson.textContent;
+
+      allLessonItems.forEach((notesItem) => {
+        const lessonElem = notesItem.querySelector(".lesson");
+        if (lessonElem && lessonElem.textContent === lessonText) {
+          notesItem.querySelector(".circle").classList.add("active");
+          lessonElem.classList.add("active");
+        }
+      });
+      createOpenNote(noteObj);
+    });
+    lessonBody.appendChild(lessonBox);
+  });
+  folderElement.classList.add("active-folder");
+}
+
+/* Notes Helper Function */
+
+function resetHighlightedNotes(folders, folderElement) {
+  backButton.classList.add("hidden");
+  contentHeader.textContent = folderElement.textContent;
+  const allCircles = document.querySelectorAll(".circle");
+  const allLessons = document.querySelectorAll(".lesson");
+  const allNotesItemLists = document.querySelectorAll(".notes-item-list");
+
+  folders.forEach((folder) => {
+    folder.classList.remove("active-folder");
+  });
+  allNotesItemLists.forEach((list) => {
+    list.classList.add("hidden");
+  });
+  allCircles.forEach((circle) => {
+    circle.classList.remove("active");
+  });
+  allLessons.forEach((lesson) => {
+    lesson.classList.remove("active");
+  });
+}
+
+/* Notes Constructor */
+function createNotesSidebar() {
   notesFolderList.innerHTML = "";
   contentHeader.textContent = "My Notes";
   updateFoldersAndTags();
@@ -178,108 +298,10 @@ function updateNotesSidebar() {
     });
 
     const allFolders = document.querySelectorAll(".folder-wrapper");
-    const allLessonItems = document.querySelectorAll(".notes-item");
-    const allCircles = document.querySelectorAll(".circle");
-    const allLessons = document.querySelectorAll(".lesson");
-    const allNotesItemLists = document.querySelectorAll(".notes-item-list");
-
     allFolders.forEach((item) => {
       item.addEventListener("click", () => {
-        backButton.classList.add("hidden");
-        contentHeader.textContent = item.querySelector("h4").textContent;
-        allFolders.forEach((folder) => {
-          folder.classList.remove("active-folder");
-        });
-        allNotesItemLists.forEach((list) => {
-          list.classList.add("hidden");
-        });
-        allCircles.forEach((circle) => {
-          circle.classList.remove("active");
-        });
-        allLessons.forEach((lesson) => {
-          lesson.classList.remove("active");
-        });
-        const notesItemList = item.nextElementSibling;
-        notesItemList.classList.remove("hidden");
-
-        notesBody.innerHTML = "";
-        const lessonBody = document.createElement("div");
-        lessonBody.classList.add("lessons-container");
-        notesBody.appendChild(lessonBody);
-        const lessonTitles = notesItemList.querySelectorAll(".lesson");
-        lessonTitles.forEach((lesson) => {
-          const lessonBox = document.createElement("div");
-          lessonBox.classList.add("lesson-box");
-          const folderName = item.querySelector("h4").textContent;
-          const noteObj = data.find(
-            (note) =>
-              note.title === lesson.textContent && note.folder === folderName
-          );
-          lessonBox.innerHTML = `
-            <h3>${lesson.textContent}</h3>
-            <div class="lesson-box-tag">${noteObj.tag}</div>
-          `;
-          const lessonBoxTag = lessonBox.querySelector(".lesson-box-tag");
-          lessonBoxTag.style.backgroundColor = getTagColor();
-          lessonBox.style.backgroundColor = getPastelColor();
-          lessonBox.addEventListener("click", () => {
-            backButton.classList.remove("hidden");
-            backButton.addEventListener("click", () => {
-              notesSidebarReset();
-              const noteElement = e.target.closest(".open-note");
-              if (noteElement) {
-                const breadcrumb = noteElement.querySelector(".breadcrumb");
-                const folderName = breadcrumb.textContent.split("/")[0];
-              }
-              backButton.classList.add("hidden");
-            });
-
-            allCircles.forEach((circle) => {
-              circle.classList.remove("active");
-            });
-            allLessons.forEach((lesson) => {
-              lesson.classList.remove("active");
-            });
-            const lessonText = lesson.textContent;
-            allLessonItems.forEach((notesItem) => {
-              const lessonElem = notesItem.querySelector(".lesson");
-              if (lessonElem && lessonElem.textContent === lessonText) {
-                notesItem.querySelector(".circle").classList.add("active");
-                lessonElem.classList.add("active");
-              }
-            });
-
-            contentHeader.textContent = noteObj.folder;
-            notesBody.innerHTML = `
-              <article class="open-note">
-                <p class="breadcrumb">${noteObj.folder}/${noteObj.title}</p>
-                <section class="open-note-header">
-                  <h3>${noteObj.title}</h3>
-                  <article class="misc">
-                    <section class="lesson-tag">${noteObj.tag}</section>
-                    <section class="edit-note-button">
-                      <img src="Images/edit.svg" alt="Edit Note" class="misc-icons edit-button" />
-                    </section>
-                    <section class="delete-note">
-                      <img src="Images/trash.svg" alt="Delete Note" class="misc-icons delete-button" />
-                    </section>
-                  </article>
-                </section>
-                <section class="open-note-body">
-                  <textarea class="notes-content" disabled>${noteObj.content}</textarea>
-                </section>
-                <section class="open-note-footer">
-                <p>${noteObj.date}</p>
-                <p>${noteObj.time}</p>
-                </section>
-              </article>
-            `;
-            const lessonTag = notesBody.querySelector(".lesson-tag");
-            lessonTag.style.backgroundColor = getTagColor();
-          });
-          lessonBody.appendChild(lessonBox);
-        });
-        item.classList.add("active-folder");
+        resetHighlightedNotes(allFolders, item);
+        createLessonBox(item);
       });
     });
   }
@@ -297,10 +319,12 @@ function notesSidebarReset() {
     time: "",
   };
   data = getData();
-  updateNotesSidebar();
+  createNotesSidebar();
   contentHeader.textContent = "My Notes";
   backButton.classList.add("hidden");
 }
+
+/* Notes Dialog Helpers */
 
 function showDialog(title, message) {
   const dialogbox = document.createElement("dialog");
@@ -389,6 +413,8 @@ function createAddDialog(title, inputPlaceholder, onsub) {
   });
 }
 
+/* Adding Note functions */
+
 addNoteIcon.addEventListener("click", () => {
   notesBody.innerHTML = "";
   contentHeader.textContent = "New Note";
@@ -435,7 +461,7 @@ addNoteIcon.addEventListener("click", () => {
               .join("")}
             <option value="add" id="addTag">Add new Tag</option>
           </select>
-        </section>f
+        </section>
       </div>
       <div class="note-body">
         <textarea name="addNoteContent" id="addNoteContent" class="note-textarea" placeholder="Add notes here"></textarea>
@@ -556,6 +582,8 @@ addNoteIcon.addEventListener("click", () => {
   });
   notesBody.appendChild(addNote);
 });
+
+/* Delete Notes and Edit  */
 
 notesBody.addEventListener("click", (e) => {
   if (e.target.classList.contains("delete-button")) {
